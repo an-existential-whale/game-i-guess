@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Chest extends SuperObject {
     public Chest() {
-        name = "chest";
+        name = "Chest";
         try {
             image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/chest.png/")));
         } catch (IOException e) {

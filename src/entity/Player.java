@@ -23,9 +23,9 @@ public class Player extends Entity {
 
         screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
         screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
+        solidArea = new Rectangle(8, 16, 32, 32);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
-        solidArea = new Rectangle(8, 16, 32, 32);
 
         setDefaultValues();
         getPlayerImage();
@@ -104,15 +104,21 @@ public class Player extends Entity {
 
             switch (objectName) {
                 case "Key":
+                    gp.playSE(1);
                     keys++;
                     gp.obj[index] = null;
                     break;
                 case "Door":
+                    gp.playSE(3);
                     if (keys > 0) {
                         keys--;
                         gp.obj[index] = null;
                     }
                     break;
+                case "Boots":
+                    gp.playSE(2);
+                    speed += 2;
+                    gp.obj[index] = null;
             }
         }
     }

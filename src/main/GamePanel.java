@@ -23,8 +23,10 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyH = new KeyHandler();
     TileManager tileM = new TileManager(this);
     Sound sound = new Sound();
+    Sound music = new Sound();
     public CollisionChecker collisionC = new CollisionChecker(this);
     public AssetSetter assetS = new AssetSetter(this);
+    public UI ui = new UI(this);
     Thread gameThread;
 
     //ENTITY AND OBJECT
@@ -86,22 +88,23 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         tileM.draw(g2);
-        player.draw(g2);
 
         for (SuperObject superObject : obj) {
             if (superObject != null) {
                 superObject.draw(g2, this);
             }
         }
+        player.draw(g2);
+        ui.draw(g2);
         g2.dispose();
     }
 
     public void playMusic(int i) {
-        sound.setFile(i);
-        sound.play();
-        sound.loop();
+        music.setFile(i);
+        music.play();
+        music.loop();
     }
-    public void stopMusic() { sound.stop(); }
+    public void stopMusic() { music.stop(); }
 
     public void playSE(int i) {
         sound.setFile(i);

@@ -1,5 +1,6 @@
 package main;
 
+import entity.Entity;
 import entity.Player;
 import object.SuperObject;
 import tile.TileManager;
@@ -20,7 +21,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int maxWorldRow = 50;
 
     //SYSTEM
-    KeyHandler keyH = new KeyHandler(this);
+    public KeyHandler keyH = new KeyHandler(this);
     TileManager tileM = new TileManager(this);
     Sound sound = new Sound();
     Sound music = new Sound();
@@ -32,11 +33,14 @@ public class GamePanel extends JPanel implements Runnable {
     //ENTITY AND OBJECT
     public Player player = new Player(this, keyH);
     public SuperObject[] obj = new SuperObject[10];
+    public Entity[] npc = new Entity[10];
 
     //GAME STATE
     public int gameState;
     public final int playState = 1;
     public final int pauseState = 2;
+    public final int dialogueState = 3;
+    public final int titleState = 0;
 
     int FPS = 60;
 
@@ -51,8 +55,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setUpGame() {
         assetS.setObject();
-        playMusic(0);
-        gameState = playState;
+        assetS.setNPC();
+        //playMusic(0);
+        gameState = titleState;
     }
 
     public void startGameThread() {
@@ -92,6 +97,11 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (gameState == playState) {
             player.update();
+            for (Entity entity : npc) {
+                if (entity != null) {
+                    entity.update();
+                }
+            }
         } else if (gameState == pauseState) {
             //nothing yet...
         }
@@ -100,15 +110,26 @@ public class GamePanel extends JPanel implements Runnable {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        tileM.draw(g2);
 
-        for (SuperObject superObject : obj) {
-            if (superObject != null) {
-                superObject.draw(g2, this);
+        if (gameState == titleState) {
+            ui.draw(g2);
+        } else {
+            tileM.draw(g2);
+
+            for (SuperObject superObject : obj) {
+                if (superObject != null) {
+                    superObject.draw(g2, this);
+                }
             }
+            for (int i = 0; i < npc.length; i++) {
+                if (npc[i] != null) {
+                    npc[i].draw(g2);
+                }
+            }
+            player.draw(g2);
+            ui.draw(g2);
         }
-        player.draw(g2);
-        ui.draw(g2);
+
         g2.dispose();
     }
 

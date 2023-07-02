@@ -12,13 +12,12 @@ import java.util.Objects;
 
 public class Player extends Entity {
 
-    GamePanel gp;
     KeyHandler keyH;
     public final int screenX;
     public final int screenY;
 
     public Player (GamePanel gp, KeyHandler keyH) {
-        this.gp = gp;
+        super(gp);
         this.keyH = keyH;
 
         screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
@@ -36,33 +35,23 @@ public class Player extends Entity {
         worldY = gp.tileSize * 21;
         speed = 4;
         direction = "down";
+
+        maxLife = 6;
+        life = maxLife;
     }
 
     public void getPlayerImage() {
 
-        up1 = setup("boy_up_1");
-        up2 = setup("boy_up_2");
-        down1 = setup("boy_down_1");
-        down2 = setup("boy_down_2");
-        left1 = setup("boy_left_1");
-        left2 = setup("boy_left_2");
-        right1 = setup("boy_right_1");
-        right2 = setup("boy_right_2");
+        up1 = setup("/player/boy_up_1");
+        up2 = setup("/player/boy_up_2");
+        down1 = setup("/player/boy_down_1");
+        down2 = setup("/player/boy_down_2");
+        left1 = setup("/player/boy_left_1");
+        left2 = setup("/player/boy_left_2");
+        right1 = setup("/player/boy_right_1");
+        right2 = setup("/player/boy_right_2");
 
     }
-
-    public BufferedImage setup(String imageName) {
-        Utility ut = new Utility();
-        BufferedImage image = null;
-        try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/" + imageName + ".png/")));
-            image = ut.scaleImage(image, gp.tileSize, gp.tileSize);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return image;
-    }
-
 
     public void update() {
 
@@ -83,6 +72,9 @@ public class Player extends Entity {
             collisionOn = false;
             gp.collisionC.checkTile(this);
             int objIndex = gp.collisionC.checkObject(this, true);
+            int npcIndex = gp.collisionC.checkEntity(this, gp.npc);
+            interactNPC(npcIndex);
+
             pickUpObject(objIndex);
 
             if (!collisionOn) {
@@ -112,6 +104,16 @@ public class Player extends Entity {
         if (index != 999) {
 
         }
+    }
+
+    public void interactNPC(int i) {
+        if (i != 999) {
+            if (gp.keyH.enterPressed) {
+                gp.gameState = gp.dialogueState;
+                gp.npc[i].speak();
+            }
+        }
+        gp.keyH.enterPressed = false;
     }
 
     public void draw(Graphics2D g2) {
@@ -153,4 +155,5 @@ public class Player extends Entity {
 
         g2.drawImage(image, screenX, screenY, null);
     }
+
 }

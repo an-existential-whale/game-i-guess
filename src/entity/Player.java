@@ -74,8 +74,10 @@ public class Player extends Entity {
             int objIndex = gp.collisionC.checkObject(this, true);
             int npcIndex = gp.collisionC.checkEntity(this, gp.npc);
             interactNPC(npcIndex);
-
             pickUpObject(objIndex);
+            gp.eventH.checkEvent();
+
+            gp.keyH.enterPressed = false;
 
             if (!collisionOn) {
 
@@ -113,7 +115,6 @@ public class Player extends Entity {
                 gp.npc[i].speak();
             }
         }
-        gp.keyH.enterPressed = false;
     }
 
     public void draw(Graphics2D g2) {
@@ -155,5 +156,4 @@ public class Player extends Entity {
 
         g2.drawImage(image, screenX, screenY, null);
     }
-
 }
